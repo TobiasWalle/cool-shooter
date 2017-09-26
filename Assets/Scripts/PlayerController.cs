@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour {
+    public float speed = 6f;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    CharacterController characterController;
+    CollisionFlags collisionFlags;
+
+    private void Start()
+    {
+        characterController = GetComponent<CharacterController>();
+    }
+
+    public void Move(Vector3 direction)
+    {
+        Vector3 motion = direction * speed * Time.deltaTime;
+        collisionFlags = characterController.Move(motion);
+    }
+
+    public void Jump()
+    {
+        // TODO
+    }
 }

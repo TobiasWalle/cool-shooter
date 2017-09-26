@@ -1,16 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerInput : MonoBehaviour {
+[RequireComponent(typeof(PlayerController))]
+public class PlayerInput : NetworkBehaviour {
+    public string horizontalAxis = "Horizontal";
+    public string verticalAxis = "Vertical";
 
-	// Use this for initialization
-	void Start () {
-		
+    PlayerController controller;
+
+    private void Start()
+    {
+        controller = GetComponent<PlayerController>();
+    }
+
+    void Update () {
+        if (!isLocalPlayer) return;
+        Vector3 direction = new Vector3(Input.GetAxisRaw(horizontalAxis), 0, Input.GetAxisRaw(verticalAxis));
+        controller.Move(direction);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public override void OnStartLocalPlayer()
+    {
+        GetComponent<MeshRenderer>().material.color = Color.blue;
+    }
 }
