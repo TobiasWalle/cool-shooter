@@ -5,6 +5,7 @@ using UnityEngine;
 public class InstagibController : MonoBehaviour {
     public float cooldownTime = .5f;
     public GameObject beamPrefab;
+    public GameObject explosionPrefab;
 
     float timeLastShot = 0;
 
@@ -23,6 +24,7 @@ public class InstagibController : MonoBehaviour {
         if (Physics.Raycast(transform.position, Vector3.forward, out hitInfo))
         {
             RenderBeam(hitInfo.point);
+            RenderExplosion(hitInfo.point);
             GameObject gameObject = hitInfo.collider.gameObject;
             if (gameObject.tag == "Player")
             {
@@ -32,6 +34,17 @@ public class InstagibController : MonoBehaviour {
         {
             RenderBeam(transform.position + Vector3.forward * 10000);
         }
+    }
+
+    void RenderEffect(Vector3 target)
+    {
+        RenderBeam(target);
+    }
+
+    void RenderExplosion(Vector3 target)
+    {
+        GameObject instance = Instantiate(explosionPrefab);
+        instance.transform.position = target;
     }
 
     void RenderBeam(Vector3 target)

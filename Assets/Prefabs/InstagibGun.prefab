@@ -107,3 +107,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldownTime: 0.5
   beamPrefab: {fileID: 1457981197643534, guid: 96dc38282df9b0d4586e9849426d40d5, type: 2}
+  explosionPrefab: {fileID: 1921212080509148, guid: bdf6b71d36f50bd47bb5bc9bf2fecc6e,
+    type: 2}
