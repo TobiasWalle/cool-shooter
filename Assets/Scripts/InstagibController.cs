@@ -6,13 +6,7 @@ public class InstagibController : MonoBehaviour {
 
     public float cooldownTime = 2f;
     float timeLastShot = 0;
-    LineRenderer line;
 
-	void Start () {
-        line = GetComponent<LineRenderer>();
-        line.enabled = false;
-	}
-	
 	void Update () {
         Vector3 forward = Vector3.forward * 100;
         Debug.DrawLine(transform.position, transform.position + forward, Color.red);
