@@ -380,7 +380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c59931ad1fd654f9652c944ed85d65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldownTime: 2
+  cooldownTime: 0.5
+  beamPrefab: {fileID: 1457981197643534, guid: 96dc38282df9b0d4586e9849426d40d5, type: 2}
 --- !u!114 &114596807331387012
 MonoBehaviour:
   m_ObjectHideFlags: 1
