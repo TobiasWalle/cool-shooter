@@ -19,6 +19,11 @@ public class PlayerInput : NetworkBehaviour {
         if (!isLocalPlayer) return;
         Vector3 direction = new Vector3(Input.GetAxisRaw(horizontalAxis), 0, Input.GetAxisRaw(verticalAxis));
         controller.Move(direction);
+
+        if (Input.GetAxisRaw("Fire1") == 1)
+        {
+            controller.Shot();
+        }
 	}
 
     public override void OnStartLocalPlayer()
