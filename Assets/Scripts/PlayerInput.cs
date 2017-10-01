@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerController), typeof(Camera))]
 public class PlayerInput : NetworkBehaviour {
     public string horizontalAxis = "Horizontal";
     public string verticalAxis = "Vertical";
@@ -11,23 +11,55 @@ public class PlayerInput : NetworkBehaviour {
     private bool jumpButtonPressedLastFrame = false;
     private float timePassedSinceFirstButtonPress = 0.0f;
 
-    PlayerController controller;
+    private float sensitivityX = 15.0F;
+    private float sensitivityY = 15.0F;
 
-    private void Start()
+    private PlayerController controller;
+    private Camera camera;
+
+    void Start()
     {
         controller = GetComponent<PlayerController>();
+        camera = GetComponent<Camera>();
+        LockMouseCursorToWindow();
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        GetComponent<MeshRenderer>().material.color = Color.blue;
     }
 
     void Update () {
         if (!isLocalPlayer) return;
-        Vector3 direction = new Vector3(Input.GetAxisRaw(horizontalAxis), 0, Input.GetAxisRaw(verticalAxis));
+
+        if(Cursor.lockState != CursorLockMode.None) { 
+            float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
+            float rotationY = Input.GetAxis("Mouse Y") * sensitivityY;
+            transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+        }
+
+        Vector3 direction = new Vector3(
+            Input.GetAxisRaw(horizontalAxis), 
+            0, 
+            Input.GetAxisRaw(verticalAxis));
+        direction = Quaternion.Euler(0, transform.localEulerAngles.y, 0) * direction;
         controller.Move(direction * controller.speed * Time.deltaTime);
 
         if (Input.GetAxisRaw("Fire1") == 1)
         {
-            controller.Shot();
+            controller.Shoot();
         }
 
+        Jump();
+
+        if (Input.GetKeyDown("escape"))
+        { 
+            UnlockMouseCursorWhenKeyPressed();
+        }
+    }
+
+    private void Jump()
+    {
         bool jumpDown = Input.GetAxisRaw("Jump") == 1;
         bool grounded = controller.isGrounded();
 
@@ -45,10 +77,15 @@ public class PlayerInput : NetworkBehaviour {
 
         timePassedSinceFirstButtonPress += Time.deltaTime;
         jumpButtonPressedLastFrame = jumpDown;
-	}
+    }
 
-    public override void OnStartLocalPlayer()
+    private void LockMouseCursorToWindow()
     {
-        GetComponent<MeshRenderer>().material.color = Color.blue;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void UnlockMouseCursorWhenKeyPressed()
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
 }

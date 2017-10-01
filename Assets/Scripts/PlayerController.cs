@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour {
         currentVelocity.y += jumpAcceleration * Time.deltaTime;
     }
 
-    public void Shot()
+    public void Shoot()
     {
         instagibController.Shoot();
     }
