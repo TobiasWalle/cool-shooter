@@ -15,12 +15,10 @@ public class PlayerInput : NetworkBehaviour {
     private float sensitivityY = 15.0F;
 
     private PlayerController controller;
-    private Camera camera;
 
     void Start()
     {
         controller = GetComponent<PlayerController>();
-        camera = GetComponent<Camera>();
         LockMouseCursorToWindow();
     }
 
@@ -35,6 +33,7 @@ public class PlayerInput : NetworkBehaviour {
         if(Cursor.lockState != CursorLockMode.None) { 
             float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
             float rotationY = Input.GetAxis("Mouse Y") * sensitivityY;
+            rotationY = 0; // deactivated look up/down
             transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
         }
 
@@ -52,6 +51,10 @@ public class PlayerInput : NetworkBehaviour {
 
         Jump();
 
+        if (Input.GetAxisRaw("Fire2") == 1)
+        {
+            LockMouseCursorToWindow();
+        }
         if (Input.GetKeyDown("escape"))
         { 
             UnlockMouseCursorWhenKeyPressed();

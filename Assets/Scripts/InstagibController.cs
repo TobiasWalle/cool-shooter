@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,38 +8,54 @@ public class InstagibController : MonoBehaviour {
     public GameObject beamPrefab;
     public GameObject explosionPrefab;
 
-    float timeLastShot = 0;
+    private float _timeLastShot = 0;
+
+    private MeshRenderer _meshRenderer;
+
+    void Start()
+    {
+        _meshRenderer = GetComponent<MeshRenderer>();
+    }
+
+    private Vector3 StartPosition()
+    {
+        return _meshRenderer.transform.position + _meshRenderer.transform.forward * _meshRenderer.bounds.size.x;
+    }
+
+    private Vector3 Forward()
+    {
+        return _meshRenderer.transform.forward;
+    }
+
+    private Vector3 EndPosition(int distance)
+    {
+        return _meshRenderer.transform.position + _meshRenderer.transform.forward * distance;
+    }
 
     void Update () {
-        Vector3 forward = Vector3.forward * 100;
-        Debug.DrawLine(transform.position, transform.position + forward, Color.red);
-	}
+        Debug.DrawLine(StartPosition(), EndPosition(100), Color.red);
+    }
 
     public void Shoot()
     {
-        float timeSinceLastShot = Time.time - timeLastShot;
+        float timeSinceLastShot = Time.time - _timeLastShot;
         if (timeSinceLastShot < cooldownTime) return;
 
-        timeLastShot = Time.time;
-        RaycastHit hitInfo;
-        if (Physics.Raycast(transform.position, Vector3.forward, out hitInfo))
-        {
-            RenderBeam(hitInfo.point);
-            RenderExplosion(hitInfo.point);
-            GameObject gameObject = hitInfo.collider.gameObject;
-            if (gameObject.tag == "Player")
-            {
-                Destroy(gameObject);
-            }
-        } else
-        {
-            RenderBeam(transform.position + Vector3.forward * 10000);
-        }
-    }
+        _timeLastShot = Time.time;
 
-    void RenderEffect(Vector3 target)
-    {
-        RenderBeam(target);
+        Vector3 target = EndPosition(100);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(StartPosition(), Forward(), out hitInfo))
+        {
+            GameObject collidingObject = hitInfo.collider.gameObject;
+            if (collidingObject.tag == "Player")
+            {
+                Destroy(collidingObject);
+            }
+            target = hitInfo.point;
+            RenderExplosion(target);
+        }
+        RenderBeam(StartPosition(), target);
     }
 
     void RenderExplosion(Vector3 target)
@@ -47,7 +64,7 @@ public class InstagibController : MonoBehaviour {
         instance.transform.position = target;
     }
 
-    void RenderBeam(Vector3 target)
+    void RenderBeam(Vector3 source, Vector3 target)
     {
         GameObject instance = Instantiate(beamPrefab);
         BeamController beamController = instance.GetComponent<BeamController>();
@@ -57,6 +74,6 @@ public class InstagibController : MonoBehaviour {
             return;
         }
 
-        beamController.Fire(transform.position, target);
+        beamController.Fire(source, target);
     }
 }
