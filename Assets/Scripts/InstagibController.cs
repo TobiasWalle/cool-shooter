@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class InstagibController : MonoBehaviour {
+public class InstagibController : NetworkBehaviour {
     public float cooldownTime = .5f;
+	public int beamDamage = 55;
     public GameObject beamPrefab;
     public GameObject explosionPrefab;
 
@@ -48,9 +50,10 @@ public class InstagibController : MonoBehaviour {
         if (Physics.Raycast(StartPosition(), Forward(), out hitInfo))
         {
             GameObject collidingObject = hitInfo.collider.gameObject;
-            if (collidingObject.tag == "Player")
+			var health = collidingObject.GetComponent<HealthControl> ();
+			if (collidingObject.tag == "Player" && health != null)
             {
-                Destroy(collidingObject);
+				health.TakeDamage(beamDamage);
             }
             target = hitInfo.point;
             RenderExplosion(target);
@@ -62,6 +65,7 @@ public class InstagibController : MonoBehaviour {
     {
         GameObject instance = Instantiate(explosionPrefab);
         instance.transform.position = target;
+		NetworkServer.Spawn (instance);
     }
 
     void RenderBeam(Vector3 source, Vector3 target)
@@ -73,7 +77,8 @@ public class InstagibController : MonoBehaviour {
             Debug.LogError("The beam prefab requires a beam controller");
             return;
         }
-
+			
         beamController.Fire(source, target);
+		NetworkServer.Spawn (instance);
     }
 }

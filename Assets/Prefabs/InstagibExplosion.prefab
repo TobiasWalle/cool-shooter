@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 198525964622896084}
   - component: {fileID: 114850412296309896}
   - component: {fileID: 199246306400638700}
+  - component: {fileID: 114872646515628530}
+  - component: {fileID: 114463322313227842}
   m_Layer: 0
   m_Name: InstagibExplosion
   m_TagString: Untagged
@@ -42,6 +44,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114463322313227842
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1921212080509148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 1
+  m_SendInterval: 0
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!114 &114850412296309896
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -53,6 +76,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 594bc91c86a453940b687dded1300a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114872646515628530
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1921212080509148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 189
+    i1: 246
+    i2: 183
+    i3: 29
+    i4: 54
+    i5: 245
+    i6: 11
+    i7: 212
+    i8: 123
+    i9: 181
+    i10: 188
+    i11: 155
+    i12: 242
+    i13: 254
+    i14: 204
+    i15: 110
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!198 &198525964622896084
 ParticleSystem:
   m_ObjectHideFlags: 1

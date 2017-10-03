@@ -46,7 +46,7 @@ public class PlayerInput : NetworkBehaviour {
 
         if (Input.GetAxisRaw("Fire1") == 1)
         {
-            controller.Shoot();
+			CmdFireWeapon();
         }
 
         Jump();
@@ -91,4 +91,10 @@ public class PlayerInput : NetworkBehaviour {
     {
         Cursor.lockState = CursorLockMode.None;
     }
+
+	[Command]
+	private void CmdFireWeapon()
+	{
+		controller.Shoot();
+	}
 }
