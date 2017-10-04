@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: 143054588932587034}
   - component: {fileID: 114208566916431744}
   - component: {fileID: 114925458151442492}
+  - component: {fileID: 114667900832692076}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -567,6 +568,18 @@ MonoBehaviour:
   linearDamping: 0.7
   superMarioScale: 8
   maxJumpAccelerationTime: 0.1
+--- !u!114 &114667900832692076
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1123416620925698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c99d35236a951e4aa173421b12c72e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
 --- !u!114 &114925458151442492
 MonoBehaviour:
   m_ObjectHideFlags: 1
