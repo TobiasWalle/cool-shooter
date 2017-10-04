@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour {
+public class PlayerController : NetworkBehaviour {
     public float speed = 6f;
 
-    CharacterController characterController;
-    InstagibController instagibController;
-    CollisionFlags collisionFlags;
+    private CharacterController characterController;
+    private InstagibController instagibController;
+    private CollisionFlags collisionFlags;
 
     public float gravityAcceleration = -2.0f;
     public float jumpAcceleration = 25.0f;
@@ -29,8 +30,21 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    private bool foo;
+    private string bar;
+
+    private bool Foo
+    {
+        set { foo = value; }
+    }
+
     private void Start()
     {
+        if (isLocalPlayer)
+        {
+            GetComponentInChildren<Camera>().enabled = true;
+            GetComponentInChildren<AudioListener>().enabled = true;
+        }
         characterController = GetComponent<CharacterController>();
         instagibController = GetComponentInChildren<InstagibController>();
         if (instagibController == null)

@@ -15,10 +15,13 @@ public class PlayerInput : NetworkBehaviour {
     private float sensitivityY = 15.0F;
 
     private PlayerController controller;
+    private Camera _camera;
 
     void Start()
     {
         controller = GetComponent<PlayerController>();
+        _camera = GetComponent<Camera>();
+            
         LockMouseCursorToWindow();
     }
 
@@ -28,9 +31,12 @@ public class PlayerInput : NetworkBehaviour {
     }
 
     void Update () {
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 
-        if(Cursor.lockState != CursorLockMode.None) { 
+        if (Cursor.lockState != CursorLockMode.None) { 
             float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
             float rotationY = Input.GetAxis("Mouse Y") * sensitivityY;
             rotationY = 0; // deactivated look up/down
