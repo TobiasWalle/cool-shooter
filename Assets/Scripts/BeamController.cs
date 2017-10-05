@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(LineRenderer))]
-public class BeamController : MonoBehaviour {
+public class BeamController : NetworkBehaviour {
     public float duration = .5f;
     public float maxWidth = .2f;
 
@@ -23,7 +24,8 @@ public class BeamController : MonoBehaviour {
         lineRenderer.endWidth = width;
 	}
 
-    public void Fire(Vector3 start, Vector3 end)
+	[ClientRpc]
+	public void RpcFire(Vector3 start, Vector3 end)
     {
         if (isActive) return;
         lineRenderer = GetComponent<LineRenderer>();

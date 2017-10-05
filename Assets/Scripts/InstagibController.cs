@@ -77,8 +77,7 @@ public class InstagibController : NetworkBehaviour {
             Debug.LogError("The beam prefab requires a beam controller");
             return;
         }
-			
-        beamController.Fire(source, target);
 		NetworkServer.Spawn (instance);
-    }
+		beamController.RpcFire(source, target);
+	}
 }
