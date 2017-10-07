@@ -6,27 +6,17 @@ using UnityEngine.Networking;
 
 public class HealthControl : NetworkBehaviour {
 
-	private Rect TextArea;
 	private NetworkStartPosition[] spawnPoints;
 
 	[SyncVar]
-	public int currentHealth = maxHealth;
-	public const int maxHealth = 100;
+	public int currentHealth;
+	public int maxHealth;
 
 	void Start()
 	{
-		TextArea = new Rect (10, 10, Screen.width, Screen.height);
 		if(isLocalPlayer)
 		{
 			spawnPoints = FindObjectsOfType<NetworkStartPosition>();
-		}
-	}
-
-	void OnGUI()
-	{
-		if(isLocalPlayer)
-		{
-			GUI.Label (TextArea, "Health: " + currentHealth);
 		}
 	}
 

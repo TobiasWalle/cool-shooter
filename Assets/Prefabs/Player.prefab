@@ -28,6 +28,7 @@ GameObject:
   - component: {fileID: 114208566916431744}
   - component: {fileID: 114925458151442492}
   - component: {fileID: 114667900832692076}
+  - component: {fileID: 114681838721191688}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -548,6 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownTime: 0.5
+  beamDamage: 55
   beamPrefab: {fileID: 1457981197643534, guid: 96dc38282df9b0d4586e9849426d40d5, type: 2}
   explosionPrefab: {fileID: 1921212080509148, guid: bdf6b71d36f50bd47bb5bc9bf2fecc6e,
     type: 2}
@@ -580,6 +582,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 100
+  maxHealth: 100
+--- !u!114 &114681838721191688
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1123416620925698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27e82bcc964676d458a3664c78169c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114925458151442492
 MonoBehaviour:
   m_ObjectHideFlags: 1

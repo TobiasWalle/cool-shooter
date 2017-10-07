@@ -23,12 +23,15 @@ public class PlayerInput : NetworkBehaviour {
         _camera = GetComponent<Camera>();
             
         LockMouseCursorToWindow();
+
+		SetColor();
     }
 
-    public override void OnStartLocalPlayer()
-    {
-        GetComponent<MeshRenderer>().material.color = Color.blue;
-    }
+	void SetColor()
+	{
+		// Can't see ourselve, so every player is red.
+		GetComponent<MeshRenderer>().material.color = Color.red;
+	}
 
     void Update () {
         if (!isLocalPlayer)
