@@ -30,14 +30,6 @@ public class PlayerController : NetworkBehaviour {
         }
     }
 
-    private bool foo;
-    private string bar;
-
-    private bool Foo
-    {
-        set { foo = value; }
-    }
-
     private void Start()
     {
         if (isLocalPlayer)

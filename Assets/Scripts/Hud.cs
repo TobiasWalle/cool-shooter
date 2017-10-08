@@ -6,75 +6,69 @@ using UnityEngine.Networking;
 
 public class Hud : NetworkBehaviour {
 
-	private GUIStyle healthStyle;
-	private GUIStyle backStyle;
-	private GUIStyle textStyle;
-	private HealthControl healthControl;
-	private const int height = 20;
+	public Canvas _hud;
+	private Text _healthText;
+	private Text _statsText;
+	private HealthControl _healthControl;
 
-	void Awake() 
+	private void Awake() 
 	{
-		healthControl = GetComponent<HealthControl>();
-		if(healthControl == null)
+		_healthControl = GetComponent<HealthControl>();
+		if(_healthControl == null)
 		{
-			Debug.LogError ("Health Control script required but not found.");
+			Debug.LogError("Health Control script required but not found.");
+		}
+
+		if(_hud == null)
+		{
+			Debug.LogError("Hud canvas could not be loaded");
 		}
 	}
 
-	void OnGUI()
+	private void OnGUI()
 	{
 		if (!isLocalPlayer) {
+			if (_hud.enabled)
+			{
+				_hud.enabled = false;
+			}
 			return;
 		}
-		InitStyles();
 
-		Vector3 pos = new Vector2 (50, 300);
+		Setup();
 
-		// draw health bar background
-		GUI.color = Color.grey;
-		GUI.backgroundColor = Color.grey;
-		GUI.Box(new Rect(pos.x - 25, Screen.height - pos.y + 20, healthControl.maxHealth, height), ".", backStyle);
-
-		// draw health bar amount
-		GUI.color = Color.green;
-		GUI.backgroundColor = Color.green;
-		GUI.Box(new Rect(pos.x - 25, Screen.height - pos.y + 20, healthControl.currentHealth, height), ".", healthStyle);
-
-		var rect = new Rect (pos.x + 15, Screen.height - pos.y + 22, 200, 200);
-		GUI.Label(rect, healthControl.currentHealth.ToString() , textStyle);
+		_healthText.text = "+" + _healthControl.GetCurrentHealth();
+		_statsText.text = "D: " + _healthControl.GetDeathCount() + "\n" +
+			"K: " + _healthControl.killCount;
 	}
 
-	void InitStyles()
+	private void Setup()
 	{
-		if( healthStyle == null )
-		{
-			healthStyle = new GUIStyle( GUI.skin.box );
-			healthStyle.normal.background = MakeTex( 2, 2, new Color( 0f, 1f, 0f, 1.0f ) );
+		if(_healthText == null) {
+			_healthText = FindTextElementByTag ("HudHealthText");
 		}
 
-		if( backStyle == null )
-		{
-			backStyle = new GUIStyle( GUI.skin.box );
-			backStyle.normal.background = MakeTex( 2, 2, new Color( 0f, 0f, 0f, 1.0f ) );
-		}
-
-		if ( textStyle == null) 
-		{
-			textStyle = new GUIStyle( );
-			textStyle.normal.textColor = new Color( 0f, 0f, 1f, 1.0f );
+		if(_statsText == null) {
+			_statsText = FindTextElementByTag("HudStatsText");
 		}
 	}
 
-	Texture2D MakeTex( int width, int height, Color col )
+	private Text FindTextElementByTag(string tag)
 	{
-		Color[] pix = new Color[width * height];
-		for( int i = 0; i < pix.Length; ++i )
+		Text element = null;
+		var allTextElements = _hud.GetComponentsInChildren<Text>();
+		foreach(var text in allTextElements)
 		{
-			pix[ i ] = col;
+			if (text.tag == tag)
+			{
+				element = text;
+				break;
+			}
 		}
-		Texture2D result = new Texture2D( width, height );
-		result.SetPixels( pix );
-		result.Apply();
-		return result;
+		if (element == null)
+		{
+			Debug.LogError("Failed to find text element with tag " + tag);
+		}
+		return element;
 	}
 }

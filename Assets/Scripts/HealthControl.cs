@@ -9,28 +9,46 @@ public class HealthControl : NetworkBehaviour {
 	private NetworkStartPosition[] spawnPoints;
 
 	[SyncVar]
-	public int currentHealth;
+	private int _deathCounter = 0;
+	[SyncVar]
+	public int killCount = 0;
+
+	[SyncVar]
+	private int _currentHealth;
 	public int maxHealth;
 
 	void Start()
 	{
+		_currentHealth = maxHealth;
 		if(isLocalPlayer)
 		{
 			spawnPoints = FindObjectsOfType<NetworkStartPosition>();
 		}
 	}
 
-	public void TakeDamage(int amount)
+	public void TakeDamage(int amount, GameObject damager)
 	{
 		if(!isServer) 
 		{
 			return;
 		}
 
-		currentHealth -= amount;
-		if (currentHealth <= 0) 
+		Debug.Log(damager.name);
+
+		_currentHealth -= amount;
+		if (_currentHealth <= 0) 
 		{
-			currentHealth = maxHealth;
+			_currentHealth = maxHealth;
+			_deathCounter++;
+			var otherHealth = damager.GetComponent<HealthControl>();
+			if (otherHealth == null)
+			{
+				Debug.Log("Damager Health Control Script not found");
+			} 
+			else
+			{
+				otherHealth.killCount++;
+			}
 			RpcRespawn();
 		}
 	}
@@ -47,5 +65,15 @@ public class HealthControl : NetworkBehaviour {
 			}
 			transform.position = spawnPoint;
 		}
+	}
+
+	public int GetCurrentHealth()
+	{
+		return _currentHealth;
+	}
+
+	public int GetDeathCount()
+	{
+		return _deathCounter;
 	}
 }
