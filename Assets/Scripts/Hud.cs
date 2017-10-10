@@ -9,6 +9,7 @@ public class Hud : NetworkBehaviour {
 	public Canvas _hud;
 	private Text _healthText;
 	private Text _statsText;
+	private Image _deathScreen;
 	private HealthControl _healthControl;
 
 	private void Awake() 
@@ -37,6 +38,8 @@ public class Hud : NetworkBehaviour {
 
 		Setup();
 
+		ShowDeathScreen(_healthControl.GetCurrentHealth() <= 0);
+
 		_healthText.text = "+" + _healthControl.GetCurrentHealth();
 		_statsText.text = "D: " + _healthControl.GetDeathCount() + "\n" +
 			"K: " + _healthControl.killCount;
@@ -45,30 +48,41 @@ public class Hud : NetworkBehaviour {
 	private void Setup()
 	{
 		if(_healthText == null) {
-			_healthText = FindTextElementByTag ("HudHealthText");
+			_healthText = FindElementByTag<Text>("HudHealthText");
 		}
 
 		if(_statsText == null) {
-			_statsText = FindTextElementByTag("HudStatsText");
+			_statsText = FindElementByTag<Text>("HudStatsText");
+		}
+
+		if(_deathScreen == null) {
+			_deathScreen = FindElementByTag<Image>("HudDeathScreen");
 		}
 	}
 
-	private Text FindTextElementByTag(string tag)
+	private T FindElementByTag<T> (string tag) where T : MaskableGraphic
 	{
-		Text element = null;
-		var allTextElements = _hud.GetComponentsInChildren<Text>();
-		foreach(var text in allTextElements)
+		var allElements = _hud.GetComponentsInChildren<T>();
+		foreach(var element in allElements)
 		{
-			if (text.tag == tag)
+			if (element.tag == tag)
 			{
-				element = text;
-				break;
+				return element;
 			}
 		}
-		if (element == null)
-		{
-			Debug.LogError("Failed to find text element with tag " + tag);
+
+		Debug.LogError("Failed to find GUI element with tag " + tag);
+		return null;
+	}
+
+	private void ShowDeathScreen(bool showScreen)
+	{
+		var group = _deathScreen.GetComponent<CanvasGroup>();
+		if(showScreen) {
+			group.alpha = 1;	
+		} else {
+			group.alpha = 0;
 		}
-		return element;
+		
 	}
 }
