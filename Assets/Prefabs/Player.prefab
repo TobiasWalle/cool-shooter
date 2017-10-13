@@ -704,6 +704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killCount: 0
   maxHealth: 100
+  coolDownTime: 5
 --- !u!114 &114681838721191688
 MonoBehaviour:
   m_ObjectHideFlags: 1
