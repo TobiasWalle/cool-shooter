@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 28037fac002d9cd418ae4510e2bdb62d
-timeCreated: 1507462127
+guid: a743ad4bd44ea424b8775d4cb5e699a7
+timeCreated: 1507930941
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,9 +9,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Gravedigger
+  fontName: Blanka
   fontNames:
-  - Gravedigger
+  - Blanka
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

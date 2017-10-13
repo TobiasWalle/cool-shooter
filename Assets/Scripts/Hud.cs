@@ -40,9 +40,9 @@ public class Hud : NetworkBehaviour {
 
 		ShowDeathScreen(_healthControl.GetCurrentHealth() <= 0);
 
-		_healthText.text = "+" + _healthControl.GetCurrentHealth();
-		_statsText.text = "D: " + _healthControl.GetDeathCount() + "\n" +
-			"K: " + _healthControl.killCount;
+		_healthText.text = "" + _healthControl.GetCurrentHealth();
+		_statsText.text = "Deaths: " + _healthControl.GetDeathCount() + "\n" +
+			"Kills: " + _healthControl.killCount;
 	}
 
 	private void Setup()
