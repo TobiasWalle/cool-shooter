@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(PlayerController), typeof(Camera))]
+[RequireComponent(typeof(PlayerController))]
 public class PlayerInput : NetworkBehaviour {
     public string horizontalAxis = "Horizontal";
     public string verticalAxis = "Vertical";
@@ -15,23 +15,13 @@ public class PlayerInput : NetworkBehaviour {
     private float sensitivityY = 15.0F;
 
     private PlayerController controller;
-    private Camera _camera;
 
     void Start()
     {
         controller = GetComponent<PlayerController>();
-        _camera = GetComponent<Camera>();
             
         LockMouseCursorToWindow();
-
-		SetColor();
     }
-
-	void SetColor()
-	{
-		// Can't see ourselve, so every player is red.
-		GetComponent<MeshRenderer>().material.color = Color.red;
-	}
 
     void Update () {
         if (!isLocalPlayer)
@@ -49,7 +39,8 @@ public class PlayerInput : NetworkBehaviour {
         Vector3 direction = new Vector3(
             Input.GetAxisRaw(horizontalAxis), 
             0, 
-            Input.GetAxisRaw(verticalAxis));
+            Input.GetAxisRaw(verticalAxis)
+        );
         direction = Quaternion.Euler(0, transform.localEulerAngles.y, 0) * direction;
         controller.Move(direction * controller.speed * Time.deltaTime);
 

@@ -50,10 +50,12 @@ public class InstagibController : NetworkBehaviour {
         if (Physics.Raycast(StartPosition(), Forward(), out hitInfo))
         {
             GameObject collidingObject = hitInfo.collider.gameObject;
-			var healthControl = collidingObject.GetComponent<HealthControl>();
-			if (collidingObject.tag == "Player" && healthControl != null)
+            var damageZone = collidingObject.GetComponent<DamageZone>();
+            Debug.Log(collidingObject.name);
+            Debug.Log(damageZone);
+            if (damageZone != null)
             {
-				healthControl.TakeDamage(beamDamage, gameObject.transform.parent.gameObject);
+				damageZone.Hit(beamDamage, gameObject.transform.parent.gameObject);
             }
             target = hitInfo.point;
             RenderExplosion(target);

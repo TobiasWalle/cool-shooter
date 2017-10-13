@@ -32,11 +32,8 @@ public class PlayerController : NetworkBehaviour {
 
     private void Start()
     {
-        if (isLocalPlayer)
-        {
-            GetComponentInChildren<Camera>().enabled = true;
-            GetComponentInChildren<AudioListener>().enabled = true;
-        }
+        GetComponentInChildren<Camera>().enabled = isLocalPlayer;
+        GetComponentInChildren<AudioListener>().enabled = isLocalPlayer;
         characterController = GetComponent<CharacterController>();
         instagibController = GetComponentInChildren<InstagibController>();
         if (instagibController == null)

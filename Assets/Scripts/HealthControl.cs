@@ -16,9 +16,11 @@ public class HealthControl : NetworkBehaviour {
 	private int deathCounter = 0;
 	[SyncVar]
 	private int currentHealth;
-	private NetworkStartPosition[] spawnPoints;
+	[SyncVar]
     private bool isDead = false;
+	[SyncVar]
     private float coolDownTimeLeft = 0f;
+	private NetworkStartPosition[] spawnPoints;
 
 	void Start()
 	{
