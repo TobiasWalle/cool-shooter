@@ -670,7 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownTime: 0.5
-  beamDamage: 55
+  beamDamage: 120
   beamPrefab: {fileID: 1457981197643534, guid: 96dc38282df9b0d4586e9849426d40d5, type: 2}
   explosionPrefab: {fileID: 1921212080509148, guid: bdf6b71d36f50bd47bb5bc9bf2fecc6e,
     type: 2}
@@ -685,11 +685,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd0d0dda40e0114d94039c2d881255f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
+  speed: 20
   gravityAcceleration: -2
-  jumpAcceleration: 25
+  jumpAcceleration: 30
   linearDamping: 0.7
-  superMarioScale: 8
+  superMarioScale: 6
   maxJumpAccelerationTime: 0.1
 --- !u!114 &114667900832692076
 MonoBehaviour:
