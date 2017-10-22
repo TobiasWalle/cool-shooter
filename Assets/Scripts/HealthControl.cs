@@ -16,6 +16,7 @@ public class HealthControl : NetworkBehaviour {
     private float coolDownTimeLeft = 0f;
 	private NetworkStartPosition[] _spawnPoints;
 	private ScoreManager _scoreManager;
+	private PlayerController _playerController;
 
 	void Start()
 	{
@@ -25,6 +26,7 @@ public class HealthControl : NetworkBehaviour {
 			_spawnPoints = FindObjectsOfType<NetworkStartPosition>();
 		}
 		_scoreManager = FindObjectOfType<ScoreManager>();
+		_playerController = GetComponent<PlayerController>();
 	}
 
     private void Update()
@@ -52,21 +54,21 @@ public class HealthControl : NetworkBehaviour {
 		if (currentHealth <= 0) 
 		{
             Die();
-			var selfController = GetComponent<PlayerController>();
 			var otherController = damager.GetComponent<PlayerController>();
-			_scoreManager.RpcSetScore(selfController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
+			_scoreManager.RpcSetScore(_playerController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
 			_scoreManager.RpcSetScore(otherController.GetPlayerName(), ScoreManager.ScoreTypes.Kills, 1);
+			_playerController.RpcEnabled(false);
 		}
 	}
 
-    void Die()
+    private void Die()
     {			
         coolDownTimeLeft = coolDownTime;
         isDead = true;
     }
 		
 	[ClientRpc]
-	void RpcRespawn()
+	private void RpcRespawn()
 	{
 		currentHealth = maxHealth;
 		Vector3 spawnPoint = Vector3.zero;
@@ -76,6 +78,7 @@ public class HealthControl : NetworkBehaviour {
 		}
 		transform.position = spawnPoint;
 		isDead = false;
+		_playerController.RpcEnabled(true);
 	}
 
 	public int GetCurrentHealth()

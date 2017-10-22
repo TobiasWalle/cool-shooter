@@ -14,12 +14,12 @@ public class PlayerInput : NetworkBehaviour {
     private float sensitivityX = 15.0F;
     private float sensitivityY = 15.0F;
 
-	private PlayerController _controller;
+	private PlayerController _playerController;
 	private Hud _hud;
 
     void Start()
     {
-        _controller = GetComponent<PlayerController>();
+        _playerController = GetComponent<PlayerController>();
 		_hud = GetComponent<Hud>();
             
         LockMouseCursorToWindow();
@@ -31,29 +31,35 @@ public class PlayerInput : NetworkBehaviour {
             return;
         }
 
-        if (Cursor.lockState != CursorLockMode.None) { 
+		if (Cursor.lockState != CursorLockMode.None && _playerController.IsEnabled()) { 
             float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
             float rotationY = Input.GetAxis("Mouse Y") * sensitivityY;
             rotationY = 0; // deactivated look up/down
             transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
         }
 
-        Vector3 direction = new Vector3(
-            Input.GetAxisRaw(horizontalAxis), 
-            0, 
-            Input.GetAxisRaw(verticalAxis)
-        );
-        direction = Quaternion.Euler(0, transform.localEulerAngles.y, 0) * direction;
-        _controller.Move(direction * _controller.speed * Time.deltaTime);
+		if (_playerController.IsEnabled())
+		{
+			Vector3 direction = new Vector3(
+				Input.GetAxisRaw(horizontalAxis), 
+				0, 
+				Input.GetAxisRaw(verticalAxis)
+			);
+			direction = Quaternion.Euler(0, transform.localEulerAngles.y, 0) * direction;
+			_playerController.Move(direction * _playerController.speed * Time.deltaTime);
+		}
 
-        if (Input.GetAxisRaw("Fire1") == 1)
+		if (Input.GetAxisRaw("Fire1") == 1 && _playerController.IsEnabled())
         {
 			CmdFireWeapon();
         }
 
-        Jump();
+		if(_playerController.IsEnabled())
+		{
+			Jump();
+		}
 
-        if (Input.GetAxisRaw("Fire2") == 1)
+		if (Input.GetAxisRaw("Fire2") == 1 && _playerController.IsEnabled())
         {
             LockMouseCursorToWindow();
         }
@@ -75,7 +81,7 @@ public class PlayerInput : NetworkBehaviour {
     private void Jump()
     {
         bool jumpDown = Input.GetAxisRaw("Jump") == 1;
-        bool grounded = _controller.isGrounded();
+        bool grounded = _playerController.isGrounded();
 
         bool isFirstPress = jumpDown && !jumpButtonPressedLastFrame;
 
@@ -84,9 +90,9 @@ public class PlayerInput : NetworkBehaviour {
             timePassedSinceFirstButtonPress = 0.0f;
         }
 
-        if (jumpDown && timePassedSinceFirstButtonPress < this._controller.maxJumpAccelerationTime)
+        if (jumpDown && timePassedSinceFirstButtonPress < this._playerController.maxJumpAccelerationTime)
         {
-            this._controller.Jump();
+            this._playerController.Jump();
         }
 
         timePassedSinceFirstButtonPress += Time.deltaTime;
@@ -106,7 +112,7 @@ public class PlayerInput : NetworkBehaviour {
 	[Command]
 	private void CmdFireWeapon()
 	{
-		_controller.Shoot();
+		_playerController.Shoot();
 	}
 
 	private void ShowScoreboard(bool isShown)
