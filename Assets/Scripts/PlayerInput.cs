@@ -14,11 +14,13 @@ public class PlayerInput : NetworkBehaviour {
     private float sensitivityX = 15.0F;
     private float sensitivityY = 15.0F;
 
-    private PlayerController controller;
+	private PlayerController _controller;
+	private Hud _hud;
 
     void Start()
     {
-        controller = GetComponent<PlayerController>();
+        _controller = GetComponent<PlayerController>();
+		_hud = GetComponent<Hud>();
             
         LockMouseCursorToWindow();
     }
@@ -42,7 +44,7 @@ public class PlayerInput : NetworkBehaviour {
             Input.GetAxisRaw(verticalAxis)
         );
         direction = Quaternion.Euler(0, transform.localEulerAngles.y, 0) * direction;
-        controller.Move(direction * controller.speed * Time.deltaTime);
+        _controller.Move(direction * _controller.speed * Time.deltaTime);
 
         if (Input.GetAxisRaw("Fire1") == 1)
         {
@@ -59,12 +61,21 @@ public class PlayerInput : NetworkBehaviour {
         { 
             UnlockMouseCursorWhenKeyPressed();
         }
+
+		if(Input.GetKeyDown(KeyCode.Tab))
+		{
+			ShowScoreBoard(true);
+		}
+		if(Input.GetKeyUp(KeyCode.Tab))
+		{
+			ShowScoreBoard(false);
+		}
     }
 
     private void Jump()
     {
         bool jumpDown = Input.GetAxisRaw("Jump") == 1;
-        bool grounded = controller.isGrounded();
+        bool grounded = _controller.isGrounded();
 
         bool isFirstPress = jumpDown && !jumpButtonPressedLastFrame;
 
@@ -73,9 +84,9 @@ public class PlayerInput : NetworkBehaviour {
             timePassedSinceFirstButtonPress = 0.0f;
         }
 
-        if (jumpDown && timePassedSinceFirstButtonPress < this.controller.maxJumpAccelerationTime)
+        if (jumpDown && timePassedSinceFirstButtonPress < this._controller.maxJumpAccelerationTime)
         {
-            this.controller.Jump();
+            this._controller.Jump();
         }
 
         timePassedSinceFirstButtonPress += Time.deltaTime;
@@ -95,6 +106,11 @@ public class PlayerInput : NetworkBehaviour {
 	[Command]
 	private void CmdFireWeapon()
 	{
-		controller.Shoot();
+		_controller.Shoot();
+	}
+
+	private void ShowScoreBoard(bool isShown)
+	{
+		_hud.ShowScoreBoard(isShown);
 	}
 }

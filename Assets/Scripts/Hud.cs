@@ -6,11 +6,13 @@ using UnityEngine.Networking;
 
 public class Hud : NetworkBehaviour {
 
-	public Canvas _hud;
+	public Canvas hud;
+	private ScoreManager _scoreBoard;
 	private Text _healthText;
 	private Text _statsText;
 	private Image _deathScreen;
 	private HealthControl _healthControl;
+	private bool _showScoreBoard;
 
 	private void Awake() 
 	{
@@ -20,18 +22,25 @@ public class Hud : NetworkBehaviour {
 			Debug.LogError("Health Control script required but not found.");
 		}
 
-		if(_hud == null)
+		if(hud == null)
 		{
 			Debug.LogError("Hud canvas could not be loaded");
 		}
+
+		_scoreBoard = GameObject.FindObjectOfType<ScoreManager>();
+		if(_scoreBoard == null) 
+		{
+			Debug.LogError("Unable to load score manager script.");
+		}
+		_showScoreBoard = false;
 	}
 
 	private void OnGUI()
 	{
 		if (!isLocalPlayer) {
-			if (_hud.enabled)
+			if (hud.enabled)
 			{
-				_hud.enabled = false;
+				hud.enabled = false;
 			}
 			return;
 		}
@@ -40,9 +49,20 @@ public class Hud : NetworkBehaviour {
 
 		ShowDeathScreen(_healthControl.GetCurrentHealth() <= 0);
 
-		_healthText.text = "" + _healthControl.GetCurrentHealth();
+		var name = GetComponent<PlayerController>().GetPlayerName();
+		_healthText.text = "" + _healthControl.GetCurrentHealth() + " - " + name;
 		_statsText.text = "Deaths: " + _healthControl.GetDeathCount() + "\n" +
 			"Kills: " + _healthControl.killCount;
+
+		if(_showScoreBoard && _scoreBoard != null) {
+			var list = _scoreBoard.GetPlayerNames();
+			var pos = 32;
+			foreach(var player in list)
+			{
+				GUI.Label(new Rect(256, pos, 128, 32), player);
+				pos += 32;
+			}
+		}
 	}
 
 	private void Setup()
@@ -62,7 +82,7 @@ public class Hud : NetworkBehaviour {
 
 	private T FindElementByTag<T> (string tag) where T : MaskableGraphic
 	{
-		var allElements = _hud.GetComponentsInChildren<T>();
+		var allElements = hud.GetComponentsInChildren<T>();
 		foreach(var element in allElements)
 		{
 			if (element.tag == tag)
@@ -84,5 +104,10 @@ public class Hud : NetworkBehaviour {
 			group.alpha = 0;
 		}
 		
+	}
+
+	public void ShowScoreBoard(bool isShown)
+	{
+		_showScoreBoard = isShown;
 	}
 }

@@ -9,13 +9,15 @@ public class PlayerController : NetworkBehaviour {
 
     private CharacterController characterController;
     private InstagibController instagibController;
-    private CollisionFlags collisionFlags;
 
     public float gravityAcceleration = -2.0f;
     public float jumpAcceleration = 25.0f;
     public float linearDamping = 0.7f;
     public float superMarioScale = 8.0f;
     public float maxJumpAccelerationTime = 0.1f;
+
+	[SyncVar]
+	private string playerName;
 
     private Vector3 currentVelocity = Vector3.zero;
 
@@ -40,11 +42,12 @@ public class PlayerController : NetworkBehaviour {
         {
             Debug.LogError("InstagibController has to be set");
         }
+		RequestPlayerName();
     }
 
     public void Move(Vector3 direction)
     {
-        collisionFlags = characterController.Move(direction);
+        characterController.Move(direction);
     }
 
     private void integrateMovement()
@@ -82,4 +85,22 @@ public class PlayerController : NetworkBehaviour {
     {
         instagibController.Shoot();
     }
+
+	[Command]
+	public void CmdAssignPlayerName(string name)
+	{
+		playerName = name;
+	}
+
+	private void RequestPlayerName()
+	{
+		var networkManager = GameObject.FindObjectOfType<CustomNetworkManager>();
+		var name = networkManager.GetUsername();
+		CmdAssignPlayerName(name);
+	}
+		
+	public string GetPlayerName()
+	{
+		return playerName;
+	}
 }

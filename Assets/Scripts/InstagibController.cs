@@ -51,8 +51,8 @@ public class InstagibController : NetworkBehaviour {
         {
             GameObject collidingObject = hitInfo.collider.gameObject;
             var damageZone = collidingObject.GetComponent<DamageZone>();
-            Debug.Log(collidingObject.name);
-            Debug.Log(damageZone);
+//            Debug.Log(collidingObject.name);
+//            Debug.Log(damageZone);
             if (damageZone != null)
             {
 				damageZone.Hit(beamDamage, gameObject.transform.parent.gameObject);

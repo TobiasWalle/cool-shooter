@@ -52,6 +52,8 @@ public class HealthControl : NetworkBehaviour {
 			return;
 		}
 
+		Debug.Log(damager.GetComponent<PlayerController>().GetPlayerName() + " has killed somebody");
+
 		currentHealth -= amount;
 		if (currentHealth <= 0) 
 		{
