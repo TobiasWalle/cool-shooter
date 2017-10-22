@@ -17,7 +17,9 @@ public class PlayerController : NetworkBehaviour {
     public float maxJumpAccelerationTime = 0.1f;
 
 	[SyncVar]
-	private string playerName;
+	private string _playerName;
+	private ScoreManager _scoreManager;
+	private CustomNetworkManager _networkManager;
 
     private Vector3 currentVelocity = Vector3.zero;
 
@@ -42,6 +44,8 @@ public class PlayerController : NetworkBehaviour {
         {
             Debug.LogError("InstagibController has to be set");
         }
+		_scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+		_networkManager = GameObject.FindObjectOfType<CustomNetworkManager>();
 		RequestPlayerName();
     }
 
@@ -87,20 +91,22 @@ public class PlayerController : NetworkBehaviour {
     }
 
 	[Command]
-	public void CmdAssignPlayerName(string name)
+	private void CmdAssignPlayerName(string name)
 	{
-		playerName = name;
+		_playerName = name;
+		_scoreManager.RpcRegisterPlayer(name);
 	}
 
 	private void RequestPlayerName()
 	{
-		var networkManager = GameObject.FindObjectOfType<CustomNetworkManager>();
-		var name = networkManager.GetUsername();
+		var name = _networkManager.GetUsername();
+//		name = _scoreManager.GetValidName(name);
+
 		CmdAssignPlayerName(name);
 	}
 		
 	public string GetPlayerName()
 	{
-		return playerName;
+		return _playerName;
 	}
 }

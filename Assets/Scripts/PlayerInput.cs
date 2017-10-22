@@ -64,11 +64,11 @@ public class PlayerInput : NetworkBehaviour {
 
 		if(Input.GetKeyDown(KeyCode.Tab))
 		{
-			ShowScoreBoard(true);
+			ShowScoreboard(true);
 		}
 		if(Input.GetKeyUp(KeyCode.Tab))
 		{
-			ShowScoreBoard(false);
+			ShowScoreboard(false);
 		}
     }
 
@@ -109,8 +109,8 @@ public class PlayerInput : NetworkBehaviour {
 		_controller.Shoot();
 	}
 
-	private void ShowScoreBoard(bool isShown)
+	private void ShowScoreboard(bool isShown)
 	{
-		_hud.ShowScoreBoard(isShown);
+		_hud.ShowScoreboard(isShown);
 	}
 }

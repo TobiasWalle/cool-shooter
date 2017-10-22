@@ -5,15 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 
 public class HealthControl : NetworkBehaviour {
-
-
-	[SyncVar]
-	public int killCount = 0;
 	public int maxHealth;
     public int coolDownTime;
 
-	[SyncVar]
-	private int deathCounter = 0;
 	[SyncVar]
 	private int currentHealth;
 	[SyncVar]
@@ -21,6 +15,7 @@ public class HealthControl : NetworkBehaviour {
 	[SyncVar]
     private float coolDownTimeLeft = 0f;
 	private NetworkStartPosition[] spawnPoints;
+	private ScoreManager _scoreManager;
 
 	void Start()
 	{
@@ -29,6 +24,7 @@ public class HealthControl : NetworkBehaviour {
 		{
 			spawnPoints = FindObjectsOfType<NetworkStartPosition>();
 		}
+		_scoreManager = FindObjectOfType<ScoreManager>();
 	}
 
     private void Update()
@@ -52,26 +48,19 @@ public class HealthControl : NetworkBehaviour {
 			return;
 		}
 
-		Debug.Log(damager.GetComponent<PlayerController>().GetPlayerName() + " has killed somebody");
-
 		currentHealth -= amount;
 		if (currentHealth <= 0) 
 		{
-			var otherHealth = damager.GetComponent<HealthControl>();
-            Die(otherHealth);
+            Die();
+			var selfController = GetComponent<PlayerController>();
+			var otherController = damager.GetComponent<PlayerController>();
+			_scoreManager.RpcSetScore(selfController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
+			_scoreManager.RpcSetScore(otherController.GetPlayerName(), ScoreManager.ScoreTypes.Kills, 1);
 		}
 	}
 
-    void Die(HealthControl killerHealthControl)
-    {
-        if (killerHealthControl == null)
-        {
-            Debug.LogError("Killer Health Control Script not found");
-            return;
-        }
-        deathCounter++;
-        killerHealthControl.killCount++;
-
+    void Die()
+    {			
         coolDownTimeLeft = coolDownTime;
         isDead = true;
     }
@@ -95,10 +84,5 @@ public class HealthControl : NetworkBehaviour {
 	public int GetCurrentHealth()
 	{
 		return currentHealth;
-	}
-
-	public int GetDeathCount()
-	{
-		return deathCounter;
 	}
 }

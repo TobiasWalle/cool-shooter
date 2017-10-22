@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - HudHealthText
-  - HudStatsText
   - HudDeathScreen
+  - HudScoreboardScreen
+  - HudScoreboardScreenList
   layers:
   - Default
   - TransparentFX

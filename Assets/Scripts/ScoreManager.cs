@@ -6,11 +6,17 @@ using System.Linq;
 
 public class ScoreManager : NetworkBehaviour {
 
-	public Dictionary <string, Dictionary<string, int>> playerScores;
+	private Dictionary <string, Dictionary<int, int>> playerScores;
+	private int _changeCounter;
+
+	public enum ScoreTypes {
+		Kills,
+		Deaths
+	}
 
 	void Start()
 	{
-		SetScore("Test777", "kill", 2);
+		_changeCounter = 0;
 	}
 
 	private void Init()
@@ -19,51 +25,70 @@ public class ScoreManager : NetworkBehaviour {
 		{
 			return;
 		}
-		playerScores = new Dictionary<string, Dictionary<string, int>>();
-	}
-
-	public void AddPlayer(string player)
-	{
-		Debug.Log("Player " + player + " joined the match.");
+		playerScores = new Dictionary<string, Dictionary<int, int>>();
 	}
 		
-	public int GetScore(string username, string scoreType)
+	public int GetScore(string username, ScoreTypes scoreType)
 	{
 		Init();
-
 		if(!playerScores.ContainsKey(username))
 		{
 			return 0;
 		}
 
-		if(!playerScores[username].ContainsKey(scoreType))
+		if(!playerScores[username].ContainsKey((int)scoreType))
 		{
 			return 0;
 		}
-		return playerScores[username][scoreType];
+		return playerScores[username][(int)scoreType];
 	}
 
-	public void SetScore(string username, string scoreType, int value)
+	[ClientRpc]
+	public void RpcSetScore(string username, ScoreTypes scoreType, int value)
 	{
 		Init();
 		if(!playerScores.ContainsKey(username))
 		{
-			playerScores[username] = new Dictionary<string, int>();
+			Debug.LogError("Player must register before assining score");
+			return;
 		}
-		playerScores[username][scoreType] = value;
-		
-	}
-
-	public void ChangeScore(string username, string scoreType, int amount)
-	{
-		Init();
 		var currentScore = GetScore(username, scoreType);
-		SetScore(username, scoreType, currentScore + amount);
+		playerScores[username][(int)scoreType] = value + currentScore;
+		_changeCounter++;
 	}
-
-	public string[] GetPlayerNames()
+		
+	public string[] GetPlayerNames(ScoreTypes sortBy)
 	{
 		Init();
-		return playerScores.Keys.ToArray();
+		var names = playerScores.Keys;
+		return names.OrderByDescending(x=> GetScore(x, sortBy)).ToArray();
+	}
+		
+	public string GetValidName(string name)
+	{
+		Init();
+		var newName = name;
+		int count = 2;
+		while(playerScores.ContainsKey(newName))
+		{
+			newName = name + "_" + count++;
+		}
+		return newName;
+	}
+
+	[ClientRpc]
+	public void RpcRegisterPlayer(string name)
+	{
+		Init();
+		if(!playerScores.ContainsKey(name))
+		{
+			playerScores[name] = new Dictionary<int, int>();
+		}
+		_changeCounter++;
+	}
+
+	public int GetChangeCounter()
+	{
+		return _changeCounter;
 	}
 }
