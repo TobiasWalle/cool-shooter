@@ -14,7 +14,7 @@ public class HealthControl : NetworkBehaviour {
     private bool isDead = false;
 	[SyncVar]
     private float coolDownTimeLeft = 0f;
-	private NetworkStartPosition[] spawnPoints;
+	private NetworkStartPosition[] _spawnPoints;
 	private ScoreManager _scoreManager;
 
 	void Start()
@@ -22,7 +22,7 @@ public class HealthControl : NetworkBehaviour {
 		currentHealth = maxHealth;
 		if(isLocalPlayer)
 		{
-			spawnPoints = FindObjectsOfType<NetworkStartPosition>();
+			_spawnPoints = FindObjectsOfType<NetworkStartPosition>();
 		}
 		_scoreManager = FindObjectOfType<ScoreManager>();
 	}
@@ -68,17 +68,14 @@ public class HealthControl : NetworkBehaviour {
 	[ClientRpc]
 	void RpcRespawn()
 	{
-		if(isLocalPlayer)
+		currentHealth = maxHealth;
+		Vector3 spawnPoint = Vector3.zero;
+		if(_spawnPoints != null && _spawnPoints.Length > 0)
 		{
-			currentHealth = maxHealth;
-			Vector3 spawnPoint = Vector3.zero;
-			if(spawnPoints != null && spawnPoints.Length > 0)
-			{
-				spawnPoint = spawnPoints [Random.Range (0, spawnPoints.Length)].transform.position;
-			}
-			transform.position = spawnPoint;
-            isDead = false;
+			spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Length)].transform.position;
 		}
+		transform.position = spawnPoint;
+		isDead = false;
 	}
 
 	public int GetCurrentHealth()
