@@ -15,6 +15,6 @@ public class DamageZone : MonoBehaviour {
     public void Hit(int damage, GameObject damager)
     {
         damage = (int) (damage * multiplier);
-        healthControl.TakeDamage(damage, damager);
+		healthControl.TakeDamage(damage, damager);
     }
 }

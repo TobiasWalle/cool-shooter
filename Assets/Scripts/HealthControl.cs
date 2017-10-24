@@ -42,7 +42,7 @@ public class HealthControl : NetworkBehaviour {
             }
         }
     }
-
+		
     public void TakeDamage(int amount, GameObject damager)
 	{
 		if(!isServer) 
@@ -53,11 +53,12 @@ public class HealthControl : NetworkBehaviour {
 		currentHealth -= amount;
 		if (currentHealth <= 0) 
 		{
-            Die();
+			currentHealth = 0;       
 			var otherController = damager.GetComponent<PlayerController>();
 			_scoreManager.RpcSetScore(_playerController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
 			_scoreManager.RpcSetScore(otherController.GetPlayerName(), ScoreManager.ScoreTypes.Kills, 1);
 			_playerController.RpcEnabled(false);
+			Die();
 		}
 	}
 
