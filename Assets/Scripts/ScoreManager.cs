@@ -6,7 +6,7 @@ using System.Linq;
 
 public class ScoreManager : NetworkBehaviour {
 
-	private Dictionary <string, Dictionary<int, int>> playerScores;
+	private Dictionary <string, Dictionary<ScoreTypes, int>> playerScores;
 	private int _changeCounter;
 
 	public enum ScoreTypes {
@@ -25,7 +25,7 @@ public class ScoreManager : NetworkBehaviour {
 		{
 			return;
 		}
-		playerScores = new Dictionary<string, Dictionary<int, int>>();
+		playerScores = new Dictionary<string, Dictionary<ScoreTypes, int>>();
 	}
 		
 	public int GetScore(string username, ScoreTypes scoreType)
@@ -36,11 +36,11 @@ public class ScoreManager : NetworkBehaviour {
 			return 0;
 		}
 
-		if(!playerScores[username].ContainsKey((int)scoreType))
+		if(!playerScores[username].ContainsKey(scoreType))
 		{
 			return 0;
 		}
-		return playerScores[username][(int)scoreType];
+		return playerScores[username][scoreType];
 	}
 
 	[ClientRpc]
@@ -53,7 +53,7 @@ public class ScoreManager : NetworkBehaviour {
 			return;
 		}
 		var currentScore = GetScore(username, scoreType);
-		playerScores[username][(int)scoreType] = value + currentScore;
+		playerScores[username][scoreType] = value + currentScore;
 		_changeCounter++;
 	}
 		
@@ -82,7 +82,7 @@ public class ScoreManager : NetworkBehaviour {
 		Init();
 		if(!playerScores.ContainsKey(name))
 		{
-			playerScores[name] = new Dictionary<int, int>();
+			playerScores[name] = new Dictionary<ScoreTypes, int>();
 		}
 		_changeCounter++;
 	}
