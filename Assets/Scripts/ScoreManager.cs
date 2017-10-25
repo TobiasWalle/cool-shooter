@@ -6,7 +6,7 @@ using System.Linq;
 
 public class ScoreManager : NetworkBehaviour {
 
-	private Dictionary <string, Dictionary<ScoreTypes, int>> playerScores;
+	private Dictionary <string, Dictionary<ScoreTypes, int>> playerScores = new Dictionary<string, Dictionary<ScoreTypes, int>>();
 	private int _changeCounter;
 
 	public enum ScoreTypes {
@@ -18,19 +18,9 @@ public class ScoreManager : NetworkBehaviour {
 	{
 		_changeCounter = 0;
 	}
-
-	private void Init()
-	{
-		if(playerScores != null)
-		{
-			return;
-		}
-		playerScores = new Dictionary<string, Dictionary<ScoreTypes, int>>();
-	}
 		
 	public int GetScore(string username, ScoreTypes scoreType)
 	{
-		Init();
 		if(!playerScores.ContainsKey(username))
 		{
 			return 0;
@@ -46,7 +36,6 @@ public class ScoreManager : NetworkBehaviour {
 	[ClientRpc]
 	public void RpcSetScore(string username, ScoreTypes scoreType, int value)
 	{
-		Init();
 		if(!playerScores.ContainsKey(username))
 		{
 			Debug.LogError("Player must register before assining score");
@@ -58,15 +47,13 @@ public class ScoreManager : NetworkBehaviour {
 	}
 		
 	public string[] GetPlayerNames(ScoreTypes sortBy)
-	{
-		Init();
+    { 
 		var names = playerScores.Keys;
 		return names.OrderByDescending(x=> GetScore(x, sortBy)).ToArray();
 	}
 		
 	public string GetValidName(string name)
 	{
-		Init();
 		var newName = name;
 		int count = 2;
 		while(playerScores.ContainsKey(newName))
@@ -79,7 +66,6 @@ public class ScoreManager : NetworkBehaviour {
 	[ClientRpc]
 	public void RpcRegisterPlayer(string name)
 	{
-		Init();
 		if(!playerScores.ContainsKey(name))
 		{
 			playerScores[name] = new Dictionary<ScoreTypes, int>();

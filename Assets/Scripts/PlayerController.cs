@@ -106,7 +106,7 @@ public class PlayerController : NetworkBehaviour {
             return;
         }
 		var name = _networkManager.GetUsername();
-//		name = _scoreManager.GetValidName(name);
+		name = _scoreManager.GetValidName(name);
 
 		CmdAssignPlayerName(name);
 	}
