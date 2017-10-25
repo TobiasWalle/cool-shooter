@@ -38,7 +38,7 @@ public class HealthControl : NetworkBehaviour {
                 coolDownTimeLeft -= Time.deltaTime;
             } else
             {
-                RpcRespawn();
+                Respawn();
             }
         }
     }
@@ -57,7 +57,7 @@ public class HealthControl : NetworkBehaviour {
 			var otherController = damager.GetComponent<PlayerController>();
 			_scoreManager.RpcSetScore(_playerController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
 			_scoreManager.RpcSetScore(otherController.GetPlayerName(), ScoreManager.ScoreTypes.Kills, 1);
-			_playerController.RpcEnabled(false);
+			_playerController.RpcEnable(false);
 			Die();
 		}
 	}
@@ -71,16 +71,21 @@ public class HealthControl : NetworkBehaviour {
 	[ClientRpc]
 	private void RpcRespawn()
 	{
-		currentHealth = maxHealth;
-		Vector3 spawnPoint = Vector3.zero;
-		if(_spawnPoints != null && _spawnPoints.Length > 0)
-		{
-			spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Length)].transform.position;
-		}
-		transform.position = spawnPoint;
-		isDead = false;
-		_playerController.RpcEnabled(true);
+        Respawn();
 	}
+
+    private void Respawn()
+    {
+        currentHealth = maxHealth;
+        Vector3 spawnPoint = Vector3.zero;
+        if (_spawnPoints != null && _spawnPoints.Length > 0)
+        {
+            spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Length)].transform.position;
+        }
+        transform.position = spawnPoint;
+        isDead = false;
+        _playerController.Enable(true);
+    }
 
 	public int GetCurrentHealth()
 	{

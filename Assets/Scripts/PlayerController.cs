@@ -48,7 +48,7 @@ public class PlayerController : NetworkBehaviour {
 		_scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 		_networkManager = GameObject.FindObjectOfType<CustomNetworkManager>();
 		RequestPlayerName();
-		RpcEnabled(true);
+		Enable(true);
     }
 
     public void Move(Vector3 direction)
@@ -101,6 +101,10 @@ public class PlayerController : NetworkBehaviour {
 
 	private void RequestPlayerName()
 	{
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 		var name = _networkManager.GetUsername();
 //		name = _scoreManager.GetValidName(name);
 
@@ -113,17 +117,22 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	public void RpcEnabled(bool isEnabled)
+	public void RpcEnable(bool isEnabled)
 	{
-		_isEnabled = isEnabled;
-		var renderers = GetComponentsInChildren<Renderer>();
-		foreach(var renderer in renderers)
-		{
-			renderer.enabled = _isEnabled;
-		}
+        Enable(isEnabled);
 	}
 
-	public bool IsEnabled()
+    public void Enable(bool isEnabled)
+    {
+        _isEnabled = isEnabled;
+        var renderers = GetComponentsInChildren<Renderer>();
+        foreach (var renderer in renderers)
+        {
+            renderer.enabled = _isEnabled;
+        }
+    }
+
+    public bool IsEnabled()
 	{
 		return _isEnabled;
 	}
