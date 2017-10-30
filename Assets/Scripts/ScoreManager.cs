@@ -3,78 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Linq;
+using Assets.Core;
 
-public class ScoreManager : NetworkBehaviour {
+public class ScoreManager : NetworkBehaviour
+{
+    private readonly PlayerSyncList _players = new PlayerSyncList();
+    private int _changeCounter;
 
-	private Dictionary <string, Dictionary<ScoreTypes, int>> playerScores = new Dictionary<string, Dictionary<ScoreTypes, int>>();
-	private int _changeCounter;
+    private void Start()
+    {
+        _changeCounter = 0;
+    }
 
-	public enum ScoreTypes {
-		Kills,
-		Deaths
-	}
+    [ClientRpc]
+    public void RpcIncrementDeaths(string playerId)
+    {
+        this.IncrementScore(playerId, ScoreType.Deaths);
+    }
 
-	void Start()
-	{
-		_changeCounter = 0;
-	}
-		
-	public int GetScore(string username, ScoreTypes scoreType)
-	{
-		if(!playerScores.ContainsKey(username))
-		{
-			return 0;
-		}
+    [ClientRpc]
+    public void RpcIncrementKills(string playerId)
+    {
+        this.IncrementScore(playerId, ScoreType.Kills);
+    }
 
-		if(!playerScores[username].ContainsKey(scoreType))
-		{
-			return 0;
-		}
-		return playerScores[username][scoreType];
-	}
+    private void IncrementScore(string playerId, ScoreType type)
+    {
+        var i = _players.FindIndexById(playerId);
+        if (i < 0)
+        {
+            Debug.LogError("Player must register before assigning score");
+            return;
+        }
+        var player = _players[i];
+        player.Score = _players[i].Score.Increment(type);
+        _players[i] = player;
+        _players.Dirty(i);
+        _changeCounter++;
+    }
 
-	[ClientRpc]
-	public void RpcSetScore(string username, ScoreTypes scoreType, int value)
-	{
-		if(!playerScores.ContainsKey(username))
-		{
-			Debug.LogError("Player must register before assining score");
-			return;
-		}
-		var currentScore = GetScore(username, scoreType);
-		playerScores[username][scoreType] = value + currentScore;
-		_changeCounter++;
-	}
-		
-	public string[] GetPlayerNames(ScoreTypes sortBy)
-    { 
-		var names = playerScores.Keys;
-		return names.OrderByDescending(x=> GetScore(x, sortBy)).ToArray();
-	}
-		
-	public string GetValidName(string name)
-	{
-		var newName = name;
-		int count = 2;
-		while(playerScores.ContainsKey(newName))
-		{
-			newName = name + "_" + count++;
-		}
-		return newName;
-	}
+    internal IEnumerable<Player> GetPlayers()
+    {
+        return _players.OrderByDescending(player => player.Score.Kills);
+    }
 
-	[ClientRpc]
-	public void RpcRegisterPlayer(string name)
-	{
-		if(!playerScores.ContainsKey(name))
-		{
-			playerScores[name] = new Dictionary<ScoreTypes, int>();
-		}
-		_changeCounter++;
-	}
+    [Server]
+    public void RegisterPlayer(string id, string name)
+    {
+        _players.Add(new Player(id, name));
+        _changeCounter++;
+    }
 
-	public int GetChangeCounter()
-	{
-		return _changeCounter;
-	}
+    public int GetChangeCounter()
+    {
+        return _changeCounter;
+    }
 }

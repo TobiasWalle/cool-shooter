@@ -63,8 +63,6 @@ public class InstagibController : NetworkBehaviour {
 
     void RenderExplosion(Vector3 target)
     {
-        Debug.Log("Explosion");
-        Debug.Log(target);
         GameObject instance = Instantiate(explosionPrefab);
         instance.transform.position = target;
 		NetworkServer.Spawn (instance);
@@ -72,8 +70,6 @@ public class InstagibController : NetworkBehaviour {
 
     void RenderBeam(Vector3 source, Vector3 target)
     {
-        Debug.Log("Beam");
-        Debug.Log(target);
         GameObject instance = Instantiate(beamPrefab);
         BeamController beamController = instance.GetComponent<BeamController>();
         if (beamController == null)

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,9 @@ public class ScoreboardListHandler : MonoBehaviour {
 	private void Start () {
 		_scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 
-		if(_scoreManager == null)
-		{
-			Debug.LogError("No score manager found on game objects.");
-			return;
-		}
+		if (_scoreManager != null) return;
+		Debug.LogError("No score manager found on game objects.");
+		return;
 	}
 
 	private void Update () {
@@ -35,7 +34,7 @@ public class ScoreboardListHandler : MonoBehaviour {
 	{
 		while(this.transform.childCount > 0)
 		{
-			Transform child = this.transform.GetChild(0);
+			var child = this.transform.GetChild(0);
 			child.SetParent(null);
 			Destroy(child.gameObject);
 		}
@@ -43,15 +42,13 @@ public class ScoreboardListHandler : MonoBehaviour {
 
 	private void LoadList()
 	{
-		var playser = _scoreManager.GetPlayerNames(ScoreManager.ScoreTypes.Kills);
+		var playser = _scoreManager.GetPlayers();
 		foreach(var player in playser)
 		{
 			GameObject entry = (GameObject)Instantiate(scoreboardListEntry);
-			SetHeaderText(entry, "HeaderName", player);
-			var kills = _scoreManager.GetScore(player, ScoreManager.ScoreTypes.Kills).ToString();
-			SetHeaderText(entry, "HeaderKills", kills);
-			var deaths = _scoreManager.GetScore(player, ScoreManager.ScoreTypes.Deaths).ToString();
-			SetHeaderText(entry, "HeaderDeaths", deaths);
+			SetHeaderText(entry, "HeaderName", player.Name);
+			SetHeaderText(entry, "HeaderKills", player.Score.Kills.ToString());
+			SetHeaderText(entry, "HeaderDeaths", player.Score.Deaths.ToString());
 			entry.transform.SetParent(this.transform);
 		}
 	}

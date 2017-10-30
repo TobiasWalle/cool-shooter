@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,7 +18,8 @@ public class PlayerController : NetworkBehaviour {
     public float maxJumpAccelerationTime = 0.1f;
 
 	[SyncVar]
-	private string _playerName;
+	private string _playerId;
+
 	private ScoreManager _scoreManager;
 	private CustomNetworkManager _networkManager;
 	private bool _isEnabled;
@@ -66,7 +68,7 @@ public class PlayerController : NetworkBehaviour {
         currentVelocity *= linearDamping;
     }
 
-    public bool isGrounded()
+    public bool IsGrounded()
     {
         const float rayMaxDistance = 0.2f;
 
@@ -95,8 +97,9 @@ public class PlayerController : NetworkBehaviour {
 	[Command]
 	private void CmdAssignPlayerName(string name)
 	{
-		_playerName = name;
-		_scoreManager.RpcRegisterPlayer(name);
+        _playerId = Guid.NewGuid().ToString();
+
+        _scoreManager.RegisterPlayer(_playerId, name);
 	}
 
 	private void RequestPlayerName()
@@ -106,14 +109,13 @@ public class PlayerController : NetworkBehaviour {
             return;
         }
 		var name = _networkManager.GetUsername();
-		name = _scoreManager.GetValidName(name);
 
 		CmdAssignPlayerName(name);
 	}
 		
-	public string GetPlayerName()
+	public string GetPlayerId()
 	{
-		return _playerName;
+		return _playerId;
 	}
 
 	[ClientRpc]

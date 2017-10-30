@@ -81,7 +81,7 @@ public class PlayerInput : NetworkBehaviour {
     private void Jump()
     {
         bool jumpDown = Input.GetAxisRaw("Jump") == 1;
-        bool grounded = _playerController.isGrounded();
+        bool grounded = _playerController.IsGrounded();
 
         bool isFirstPress = jumpDown && !jumpButtonPressedLastFrame;
 

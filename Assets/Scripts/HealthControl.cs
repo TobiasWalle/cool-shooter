@@ -55,8 +55,8 @@ public class HealthControl : NetworkBehaviour {
 		{
 			currentHealth = 0;       
 			var otherController = damager.GetComponent<PlayerController>();
-			_scoreManager.RpcSetScore(_playerController.GetPlayerName(), ScoreManager.ScoreTypes.Deaths, 1);
-			_scoreManager.RpcSetScore(otherController.GetPlayerName(), ScoreManager.ScoreTypes.Kills, 1);
+			_scoreManager.RpcIncrementDeaths(_playerController.GetPlayerId());
+			_scoreManager.RpcIncrementKills(otherController.GetPlayerId());
 			_playerController.RpcEnable(false);
 			Die();
 		}
